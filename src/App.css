@@ -12,7 +12,8 @@ body,
     BlinkMacSystemFont, "Helvetica Neue", helvetica, "Segoe UI", arial,
     "PingFang SC", "Miui", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
   line-height: 1.2857142;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: transparent;
+  /* background-color: rgba(0, 0, 0, 0.03); */
   /* font-family: 'Work Sans'; */
 }
 

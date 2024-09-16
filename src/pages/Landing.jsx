@@ -28,12 +28,13 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { LuShoppingCart } from "react-icons/lu";
 import { MdOutlineSearch } from "react-icons/md";
 import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
 
 const images = [
   "/slide/1.jpg",
@@ -50,7 +51,7 @@ const Landing = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const { isOpen, onOpen } = useDisclosure();
-  const navigate = useNavigate();
+  const displayModal = useBreakpointValue({ base: false, md: true });
 
   const handleModalClose = () => {
     window.location.href = "https://www.lazada.co.th/";
@@ -77,6 +78,7 @@ const Landing = () => {
           <Stack bg="red" w="100%" alignItems="center">
             <Image src="/ad.jpg" w="1188px" h="80px" />
           </Stack>
+
           <HStack
             bg="rgba(0, 0, 0, .03)"
             h="25px"
@@ -94,6 +96,7 @@ const Landing = () => {
             <Text fontSize="12px">SIGNUP</Text>
             <Text fontSize="12px">เปลี่ยนภาษา</Text>
           </HStack>
+
           <HStack
             h="80px"
             bg="#fff"
@@ -127,7 +130,8 @@ const Landing = () => {
             <LuShoppingCart size="29px" />
             <Image src="/free.jpg" alt="free" w="188px" h="45px" />
           </HStack>
-          <VStack w="100%" mb="2.5rem">
+
+          <VStack w="100%" bg="rgba(0, 0, 0, .05)">
             <HStack h="344px">
               <Image
                 src={images[currentImageIndex]}
@@ -196,7 +200,7 @@ const Landing = () => {
             </HStack>
           </VStack>
 
-          <VStack w="100%">
+          <VStack w="100%" pt="2.5rem" bg="rgba(0, 0, 0, .05)">
             <VStack alignItems="flex-start" w="74.1%">
               <Text fontSize="22px">Flash Sale</Text>
               <VStack alignItems="flex-start" w="100%" spacing={0}>
@@ -531,111 +535,117 @@ const Landing = () => {
         </VStack>
       </Box>
 
-      <Modal isOpen={isOpen} isCentered isClosable={false}>
-        <ModalOverlay />
-        <ModalContent w="444px" h="326.58px" maxW="444px" maxH="326.58px">
-          <ModalHeader>
-            <HStack justifyContent="center">
-              <Text
-                color="#2e3346"
-                fontSize="16px"
-                fontWeight="500"
-                textAlign="center"
-              >
-                Login
-              </Text>
-            </HStack>
-          </ModalHeader>
-          <ModalCloseButton onClick={handleModalClose} />
-          <ModalBody px="36px">
-            <VStack w="100%">
-              <VStack w="100%" gap="18px">
-                <FormControl w="100%">
-                  <Input
-                    type="email"
-                    h="48px"
-                    placeholder="Please enter your Phone Number or Email"
-                    bg="0 0"
-                    border="1px solid #cbced5"
-                    borderRadius="6px"
-                    color="2e3346"
-                    fontSize="14px"
-                    fontWeight="400"
-                    lineHeight="18px"
-                  />
-                </FormControl>
-
-                <VStack spacing={0} alignItems="flex-end" w="100%">
-                  <FormControl>
-                    <InputGroup>
-                      <Input
-                        h="48px"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Please enter your password"
-                        bg="0 0"
-                        border="1px solid #cbced5"
-                        borderRadius="6px"
-                        color="2e3346"
-                        fontSize="14px"
-                        fontWeight="400"
-                        lineHeight="18px"
-                      />
-                      <InputRightElement>
-                        <Button
-                          h="1.75rem"
-                          size="sm"
-                          onClick={togglePasswordVisibility}
-                          variant="link"
-                          pr="0.5rem"
-                        >
-                          {showPassword ? (
-                            <RxEyeOpen size="1.5rem" />
-                          ) : (
-                            <RxEyeClosed size="1.5rem" />
-                          )}
-                        </Button>
-                      </InputRightElement>
-                    </InputGroup>
-                  </FormControl>
-                  <Button
-                    mt="-5px"
-                    variant="unstyled"
-                    fontSize="14px"
-                    color="#858b9c"
-                    cursor="pointer"
-                  >
-                    Forgot password?
-                  </Button>
-                </VStack>
-              </VStack>
-
-              <Button
-                bg="#f57224"
-                variant="solid"
-                w="100%"
-                color="#fff"
-                fontSize="16px"
-                fontWeight="500"
-                lineHeight="40px"
-              >
-                LOGIN
-              </Button>
-
-              <HStack spacing="6px">
-                <Text color="#858b9c" fontSize="14px">
-                  Don't have an account?
+      {displayModal && (
+        <Modal isOpen={isOpen} isCentered isClosable={false}>
+          <ModalOverlay />
+          <ModalContent w="444px" h="326.58px" maxW="444px" maxH="326.58px">
+            <ModalHeader>
+              <HStack justifyContent="center">
+                <Text
+                  color="#2e3346"
+                  fontSize="16px"
+                  fontWeight="500"
+                  textAlign="center"
+                >
+                  Login
                 </Text>
-                <Button variant="unstyled" fontSize="14px" color="#1e71ff">
-                  Sign up
-                </Button>
               </HStack>
-            </VStack>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+            </ModalHeader>
+            <ModalCloseButton onClick={handleModalClose} />
+            <ModalBody px="36px">
+              <VStack w="100%">
+                <VStack w="100%" gap="18px">
+                  <FormControl w="100%">
+                    <Input
+                      type="email"
+                      h="48px"
+                      placeholder="Please enter your Phone Number or Email"
+                      bg="0 0"
+                      border="1px solid #cbced5"
+                      borderRadius="6px"
+                      color="2e3346"
+                      fontSize="14px"
+                      fontWeight="400"
+                      lineHeight="18px"
+                    />
+                  </FormControl>
 
-      <Box display={{ base: "block", md: "none" }}>
-        <Text>Mobile Here</Text>
+                  <VStack spacing={0} alignItems="flex-end" w="100%">
+                    <FormControl>
+                      <InputGroup>
+                        <Input
+                          h="48px"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Please enter your password"
+                          bg="0 0"
+                          border="1px solid #cbced5"
+                          borderRadius="6px"
+                          color="2e3346"
+                          fontSize="14px"
+                          fontWeight="400"
+                          lineHeight="18px"
+                        />
+                        <InputRightElement>
+                          <Button
+                            h="1.75rem"
+                            size="sm"
+                            onClick={togglePasswordVisibility}
+                            variant="link"
+                            pr="0.5rem"
+                          >
+                            {showPassword ? (
+                              <RxEyeOpen size="1.5rem" />
+                            ) : (
+                              <RxEyeClosed size="1.5rem" />
+                            )}
+                          </Button>
+                        </InputRightElement>
+                      </InputGroup>
+                    </FormControl>
+                    <Button
+                      mt="-5px"
+                      variant="unstyled"
+                      fontSize="14px"
+                      color="#858b9c"
+                      cursor="pointer"
+                    >
+                      Forgot password?
+                    </Button>
+                  </VStack>
+                </VStack>
+
+                <Button
+                  bg="#f57224"
+                  variant="solid"
+                  w="100%"
+                  color="#fff"
+                  fontSize="16px"
+                  fontWeight="500"
+                  lineHeight="40px"
+                >
+                  LOGIN
+                </Button>
+
+                <HStack spacing="6px">
+                  <Text color="#858b9c" fontSize="14px">
+                    Don't have an account?
+                  </Text>
+                  <Button variant="unstyled" fontSize="14px" color="#1e71ff">
+                    Sign up
+                  </Button>
+                </HStack>
+              </VStack>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      )}
+
+      <Box display={{ base: "block", md: "none" }} p="0.5rem">
+        <VStack alignItems="flex-start">
+          <IoIosArrowBack size="1.3rem" onClick={handleModalClose} />
+          <Text>Hi 👋</Text>
+          <Text>Welcome to Lazada</Text>
+        </VStack>
       </Box>
     </>
   );
