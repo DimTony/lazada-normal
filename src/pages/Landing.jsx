@@ -642,9 +642,13 @@ const Landing = () => {
 
       <Box display={{ base: "block", md: "none" }} p="0.5rem">
         <VStack alignItems="flex-start">
-          <IoIosArrowBack size="1.3rem" onClick={handleModalClose} />
-          <Text>Hi 👋</Text>
-          <Text>Welcome to Lazada</Text>
+          <VStack w="100%" alignItems="flex-start" gap="1.5rem">
+            <IoIosArrowBack size="1.3rem" onClick={handleModalClose} />
+            <VStack fontSize="1.5rem" alignItems="flex-start">
+              <Text>Hi 👋</Text>
+              <Text>Welcome to Lazada</Text>
+            </VStack>
+          </VStack>
         </VStack>
       </Box>
     </>
