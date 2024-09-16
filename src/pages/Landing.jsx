@@ -29,12 +29,14 @@ import {
   ModalFooter,
   useDisclosure,
   useBreakpointValue,
+  Divider,
 } from "@chakra-ui/react";
 import { LuShoppingCart } from "react-icons/lu";
 import { MdOutlineSearch } from "react-icons/md";
 import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
+import { Form } from "react-router-dom";
 
 const images = [
   "/slide/1.jpg",
@@ -642,7 +644,7 @@ const Landing = () => {
 
       <Box display={{ base: "block", md: "none" }} p="1rem">
         <VStack alignItems="flex-start">
-          <VStack w="100%" alignItems="flex-start" gap="1.5rem">
+          <VStack mb="2.5rem" w="100%" alignItems="flex-start" gap="1.5rem">
             <IoIosArrowBack size="1.3rem" onClick={handleModalClose} />
             <VStack
               fontSize="1.5rem"
@@ -653,6 +655,100 @@ const Landing = () => {
               <Text>Hi 👋</Text>
               <Text>Welcome to Lazada</Text>
             </VStack>
+          </VStack>
+
+          <Stack mb="0.8rem" w="100%" alignItems="center">
+            <Image
+              src="/mobile-logo.svg"
+              alt="mobile-logo"
+              w="26.667vw"
+              h="auto"
+            />
+          </Stack>
+
+          <VStack w="100%" mb="2rem">
+            <FormControl mb="2rem">
+              <Input
+                type="email"
+                h="35.44px"
+                placeholder="Please enter your Phone Number or Email"
+              />
+            </FormControl>
+
+            <FormControl>
+              <InputGroup>
+                <Input
+                  h="35.44px"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Please enter your password"
+                />
+                <InputRightElement>
+                  <Button
+                    h="1.75rem"
+                    size="sm"
+                    onClick={togglePasswordVisibility}
+                    variant="link"
+                    pr="0.5rem"
+                  >
+                    {showPassword ? (
+                      <RxEyeOpen size="1.5rem" />
+                    ) : (
+                      <RxEyeClosed size="1rem" />
+                    )}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+          </VStack>
+
+          <VStack w="100%" mb="1rem">
+            <Button
+              w="100%"
+              color="#fff"
+              bg="linear-gradient(90deg,#fe8e00,#fa2c99)"
+            >
+              LOGIN
+            </Button>
+            <Button
+              mt="-5px"
+              variant="unstyled"
+              fontSize="3.467vw"
+              fontWeight="500"
+              lineHeight="4.4vw"
+              textAlign="center"
+              textTransform="capitalize"
+              color="#1e71ff"
+              cursor="pointer"
+            >
+              Forgot Password?
+            </Button>
+          </VStack>
+
+          <Divider color="#eee" borderWidth="1px" mb="1rem" />
+
+          <VStack spacing={0} w="100%">
+            <Text
+              color="#595f6d"
+              fontSize="3.467vw"
+              fontWeight="400"
+              lineHeight="4.4vw"
+              textAlign="center"
+            >
+              Haven't signed up yet?
+            </Text>
+            <Button
+              mt="-5px"
+              variant="unstyled"
+              fontSize="3.467vw"
+              fontWeight="500"
+              lineHeight="4.4vw"
+              textAlign="center"
+              textTransform="capitalize"
+              color="#1e71ff"
+              cursor="pointer"
+            >
+              Sign up now
+            </Button>
           </VStack>
         </VStack>
       </Box>
