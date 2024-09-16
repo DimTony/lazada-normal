@@ -640,11 +640,16 @@ const Landing = () => {
         </Modal>
       )}
 
-      <Box display={{ base: "block", md: "none" }} p="0.5rem">
+      <Box display={{ base: "block", md: "none" }} p="1rem">
         <VStack alignItems="flex-start">
           <VStack w="100%" alignItems="flex-start" gap="1.5rem">
             <IoIosArrowBack size="1.3rem" onClick={handleModalClose} />
-            <VStack fontSize="1.5rem" alignItems="flex-start">
+            <VStack
+              fontSize="1.5rem"
+              fontWeight="500"
+              alignItems="flex-start"
+              spacing={0}
+            >
               <Text>Hi 👋</Text>
               <Text>Welcome to Lazada</Text>
             </VStack>
