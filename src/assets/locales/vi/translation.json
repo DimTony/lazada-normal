@@ -1,0 +1,13 @@
+{
+  "welcome": "Đăng nhập bằng mật khẩu",
+  "emailInput": "Số điện thoại/Email",
+  "passwordInput": "Mật khẩu",
+  "loginButton": "Đăng nhập",
+  "loginWithOTP": "Đăng nhập với OTP",
+  "resetPassword": "Thiết lập lại mật khẩu",
+  "connectWith": "-- Đang kết nối --",
+  "buyerAppButton": "Ứng dụng mua sắm Lazadas",
+  "createNewAccountBtn": "Đăng ký",
+  "description": "This app is now available in multiple languages!",
+  "mobileWelcome": "Đăng nhập"
+}

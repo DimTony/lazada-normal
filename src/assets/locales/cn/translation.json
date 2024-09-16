@@ -1,0 +1,10 @@
+{
+  "mobileHi": "你好",
+  "mobileWelcome": "欢迎来到 Lazada",
+  "mobileEmailInput": "请输入您的电话号码或电子邮件",
+  "mobilePasswordInput": "必须至少包含 6 位数字和字母",
+  "mobileLogin": "登录",
+  "mobileForgotPassword": "忘记密码",
+  "mobileSignedUpYet": "还没有报名吗？",
+  "mobileSignUp": "立即注册"
+}

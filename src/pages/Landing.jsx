@@ -31,12 +31,33 @@ import {
   useBreakpointValue,
   Divider,
 } from "@chakra-ui/react";
+import { ChevronDownIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { LuShoppingCart } from "react-icons/lu";
 import { MdOutlineSearch } from "react-icons/md";
 import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
-import { Form } from "react-router-dom";
+import IndonesiaFlagIcon from "/flags/indonesia.svg";
+import MalaysiaFlagIcon from "/flags/malaysia.svg";
+import PhilipinasFlagIcon from "/flags/philipinas.svg";
+import SingaporeFlagIcon from "/flags/singapore.svg";
+import ThailandFlagIcon from "/flags/thailand.svg";
+import VietnamFlagIcon from "/flags/vietnam.svg";
+import ChineseFlagIcon from "/flags/china.svg";
+import EnglishFlagIcon from "/flags/england-flag.svg";
+import MobileMenu from "../components/MobileMenu";
+
+const languages = [
+  { code: "th", name: "Thailand", flag: ThailandFlagIcon },
+  { code: "en", name: "English", flag: EnglishFlagIcon },
+  { code: "id", name: "Indonesia", flag: IndonesiaFlagIcon },
+  { code: "ms", name: "Malaysia", flag: MalaysiaFlagIcon },
+  { code: "fil", name: "Pilipinas", flag: PhilipinasFlagIcon },
+  { code: "en-SG", name: "Singapore", flag: SingaporeFlagIcon },
+  { code: "vi", name: "Vietnam", flag: VietnamFlagIcon },
+  { code: "cn", name: "简体中文", flag: ChineseFlagIcon },
+];
 
 const images = [
   "/slide/1.jpg",
@@ -52,11 +73,28 @@ const images = [
 const Landing = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
+  const { t, i18n } = useTranslation();
   const { isOpen, onOpen } = useDisclosure();
+  const {
+    isOpen: isMobileDrawerOpen,
+    onOpen: onMobileDrawerOpen,
+    onClose: onMobileDrawerClose,
+  } = useDisclosure();
   const displayModal = useBreakpointValue({ base: false, md: true });
 
   const handleModalClose = () => {
     window.location.href = "https://www.lazada.co.th/";
+  };
+
+  const changeLanguage = (languageCode) => {
+    i18n.changeLanguage(languageCode);
+    setCurrentBackgroundIndex(0);
+  };
+
+  const getCurrentLanguage = () => {
+    return (
+      languages.find((lang) => lang.code === i18n.language) || languages[0]
+    );
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -645,15 +683,32 @@ const Landing = () => {
       <Box display={{ base: "block", md: "none" }} p="1rem">
         <VStack alignItems="flex-start">
           <VStack mb="2.5rem" w="100%" alignItems="flex-start" gap="1.5rem">
-            <IoIosArrowBack size="1.3rem" onClick={handleModalClose} />
+            <HStack w="100%" justifyContent="space-between">
+              <IoIosArrowBack size="1.3rem" onClick={handleModalClose} />
+              <Button
+                onClick={onMobileDrawerOpen}
+                as={Button}
+                rightIcon={<ChevronDownIcon size="0.9rem" />}
+                variant="unstyled"
+                fontWeight="300"
+                display="flex"
+              >
+                <Image
+                  src={getCurrentLanguage().flag}
+                  alt={getCurrentLanguage().name}
+                  h="1rem"
+                  w="1rem"
+                />
+              </Button>
+            </HStack>
             <VStack
               fontSize="1.5rem"
               fontWeight="500"
               alignItems="flex-start"
               spacing={0}
             >
-              <Text>Hi 👋</Text>
-              <Text>Welcome to Lazada</Text>
+              <Text>{t("mobileHi")} 👋</Text>
+              <Text>{t("mobileWelcome")}</Text>
             </VStack>
           </VStack>
 
@@ -671,7 +726,7 @@ const Landing = () => {
               <Input
                 type="email"
                 h="35.44px"
-                placeholder="Please enter your Phone Number or Email"
+                placeholder={t("mobileEmailInput")}
               />
             </FormControl>
 
@@ -680,7 +735,7 @@ const Landing = () => {
                 <Input
                   h="35.44px"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Please enter your password"
+                  placeholder={t("mobilePasswordInput")}
                 />
                 <InputRightElement>
                   <Button
@@ -707,7 +762,7 @@ const Landing = () => {
               color="#fff"
               bg="linear-gradient(90deg,#fe8e00,#fa2c99)"
             >
-              LOGIN
+              {t("mobileLogin")}
             </Button>
             <Button
               mt="-5px"
@@ -720,7 +775,7 @@ const Landing = () => {
               color="#1e71ff"
               cursor="pointer"
             >
-              Forgot Password?
+              {t("mobileForgotPassword")}
             </Button>
           </VStack>
 
@@ -734,7 +789,7 @@ const Landing = () => {
               lineHeight="4.4vw"
               textAlign="center"
             >
-              Haven't signed up yet?
+              {t("mobileSignedUpYet")}
             </Text>
             <Button
               mt="-5px"
@@ -747,10 +802,18 @@ const Landing = () => {
               color="#1e71ff"
               cursor="pointer"
             >
-              Sign up now
+              {t("mobileSignUp")}
             </Button>
           </VStack>
         </VStack>
+
+        <MobileMenu
+          onClose={onMobileDrawerClose}
+          isOpen={isMobileDrawerOpen}
+          languages={languages}
+          changeLanguage={changeLanguage}
+          getCurrentLanguage={getCurrentLanguage}
+        />
       </Box>
     </>
   );

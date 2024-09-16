@@ -1,0 +1,10 @@
+{
+  "mobileHi": "Hi",
+  "mobileWelcome": "Welcome to Lazada",
+  "mobileEmailInput": "Please enter your phone number or email",
+  "mobilePasswordInput": "Must contain at least 6 numbers and letters",
+  "mobileLogin": "Login",
+  "mobileForgotPassword": "Forgot password",
+  "mobileSignedUpYet": "Haven't signed up yet?",
+  "mobileSignUp": "Sign Up Now"
+}

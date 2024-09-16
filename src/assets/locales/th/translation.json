@@ -1,0 +1,10 @@
+{
+  "mobileHi": "สวัสดี",
+  "mobileWelcome": "ยินดีต้อนรับเข้าสู่ลาซาด้า",
+  "mobileEmailInput": "โปรดป้อนหมายเลขโทรศัพท์หรืออีเมลของคุณ",
+  "mobilePasswordInput": "ต้องมีทั้งตัวเลขและตัวอักษร อย่างน้อย 6 ตัว",
+  "mobileLogin": "เข้าสู่ระบบ",
+  "mobileForgotPassword": "ลืมรหัสผ่าน",
+  "mobileSignedUpYet": "ยังไม่ได้สมัครสมาชิก?",
+  "mobileSignUp": "สมัครสมาชิก"
+}
