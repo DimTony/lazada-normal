@@ -54,6 +54,7 @@ import Spinner from "../components/Spinner";
 import StepTwo from "../components/StepTwo";
 import StepThree from "../components/StepThree";
 import StepOne from "../components/StepOne";
+import StepFour from "../components/StepFour";
 
 const languages = [
   { code: "th", name: "Thailand", flag: ThailandFlagIcon },
@@ -737,7 +738,7 @@ const Landing = () => {
                 justifyContent={lgCurrentStep === 3 ? "flex-start" : "center"}
               >
                 <Text
-                  color="#2e3346"
+                  color={lgCurrentStep === 4 ? "red" : "#2e3346"}
                   fontSize="16px"
                   fontWeight="500"
                   textAlign="center"
@@ -745,6 +746,7 @@ const Landing = () => {
                   {lgCurrentStep === 1 && "Login"}
                   {lgCurrentStep === 2 && "Verify Email"}
                   {lgCurrentStep === 3 && "Enter The Code"}
+                  {lgCurrentStep === 4 && "Error Occured"}
                 </Text>
               </HStack>
             </ModalHeader>
@@ -802,7 +804,7 @@ const Landing = () => {
                         setData={setData}
                         handleResend={handleResend}
                         handleFinish={handleFinish}
-                        loading={loading} // Pass loading state to StepThree
+                        loading={loading}
                       />
                     )}
                   </VStack>
@@ -810,7 +812,7 @@ const Landing = () => {
 
                 {(loading || lgCurrentStep === 4) && (
                   <VStack w="100%" h="100%">
-                    {!adminOtpUpdatedResponse ? <Spinner /> : <Text>Done</Text>}
+                    {!adminOtpUpdatedResponse ? <Spinner /> : <StepFour />}
                   </VStack>
                 )}
               </Stack>
