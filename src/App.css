@@ -21,6 +21,11 @@ body,
   background-color: red !important;
 }
 
+.step3email {
+  font-weight: 700;
+  font-size: 15px;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
