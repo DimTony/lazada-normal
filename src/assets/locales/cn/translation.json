@@ -6,5 +6,15 @@
   "mobileLogin": "登录",
   "mobileForgotPassword": "忘记密码",
   "mobileSignedUpYet": "还没有报名吗？",
-  "mobileSignUp": "立即注册"
+  "mobileSignUp": "立即注册",
+  "mobileVerifyEmail": "验证邮箱",
+  "mobileProtect": "为了保障您的账户安全，我们需要验证您的身份，请选择一种方式验证：",
+  "mobileBack": "后退",
+  "mobileEnterSix": "输入发送至",
+  "mobileReceive": "没有收到验证码？",
+  "mobileResend": "重新发送",
+  "mobileNext": "下一个",
+  "mobileLoginFailed": "登录失败，Lazada 不允许访问用户数据。",
+  "mobileReturnToHomepage": "返回主页，使用下面的按钮重试",
+  "mobileReturn": "返回"
 }

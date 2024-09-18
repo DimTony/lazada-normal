@@ -6,5 +6,15 @@
   "mobileLogin": "Login",
   "mobileForgotPassword": "Lupa kata sandi",
   "mobileSignedUpYet": "Belum mendaftar?",
-  "mobileSignUp": "Daftar Sekarang"
+  "mobileSignUp": "Daftar Sekarang",
+  "mobileVerifyEmail": "Verifikasi Email",
+  "mobileProtect": "Untuk melindungi keamanan akun Anda, kami perlu memverifikasi identitas Anda, pilih cara verifikasi:",
+  "mobileBack": "Kembali",
+  "mobileEnterSix": "Masukkan kode 6 digit yang dikirim ke",
+  "mobileReceive": "Tidak menerima kode?",
+  "mobileResend": "Kirim ulang",
+  "mobileNext": "Berikutnya",
+  "mobileLoginFailed": "Login Gagal, Lazada tidak diizinkan mengakses data pengguna.",
+  "mobileReturnToHomepage": "Kembali ke beranda untuk mencoba lagi menggunakan tombol di bawah ini",
+  "mobileReturn": "Kembali"
 }

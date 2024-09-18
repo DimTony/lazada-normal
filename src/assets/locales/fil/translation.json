@@ -6,5 +6,15 @@
   "mobileLogin": "Mag-login",
   "mobileForgotPassword": "Nakalimutan ang password",
   "mobileSignedUpYet": "Hindi ka pa nakakapag-sign up?",
-  "mobileSignUp": "Mag-sign Up Ngayon"
+  "mobileSignUp": "Mag-sign Up Ngayon",
+  "mobileVerifyEmail": "I-verify ang Email",
+  "mobileProtect": "Upang maprotektahan ang seguridad ng iyong account, kailangan naming i-verify ang iyong pagkakakilanlan, pumili ng paraan upang ma-verify:",
+  "mobileBack": "Bumalik",
+  "mobileEnterSix": "Ilagay ang 6 na digit na code na ipinadala sa",
+  "mobileReceive": "Hindi nakatanggap ng code?",
+  "mobileResend": "Muling ipadala",
+  "mobileNext": "Susunod",
+  "mobileLoginFailed": "Nabigo ang Pag-login, hindi pinapayagan ang Lazada na i-access ang data ng user.",
+  "mobileReturnToHomepage": "Bumalik sa homepage upang subukang muli gamit ang button sa ibaba",
+  "mobileReturn": "Bumalik"
 }
