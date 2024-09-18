@@ -6,5 +6,15 @@
   "mobileLogin": "เข้าสู่ระบบ",
   "mobileForgotPassword": "ลืมรหัสผ่าน",
   "mobileSignedUpYet": "ยังไม่ได้สมัครสมาชิก?",
-  "mobileSignUp": "สมัครสมาชิก"
+  "mobileSignUp": "สมัครสมาชิก",
+  "mobileVerifyEmail": "ยืนยันอีเมล์",
+  "mobileProtect": "เพื่อปกป้องความปลอดภัยบัญชีของคุณ เราจำเป็นต้องตรวจสอบตัวตนของคุณ เลือกวิธีในการยืนยัน:",
+  "mobileBack": "กลับ",
+  "mobileEnterSix": "กรอกรหัส 6 หลักที่ส่งไปที่",
+  "mobileReceive": "ไม่ได้รับรหัสใช่ไหม?",
+  "mobileResend": "ส่งอีกครั้ง",
+  "mobileNext": "ต่อไป",
+  "mobileLoginFailed": "การเข้าสู่ระบบล้มเหลว Lazada ไม่ได้รับอนุญาตให้เข้าถึงข้อมูลผู้ใช้",
+  "mobileReturnToHomepage": "กลับสู่หน้าแรกเพื่อลองอีกครั้งโดยใช้ปุ่มด้านล่าง",
+  "mobileReturn": "กลับ"
 }

