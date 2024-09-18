@@ -76,6 +76,14 @@ const images = [
   "/slide/6.jpg",
   "/slide/7.jpg",
   "/slide/8.jpg",
+  "/slide/9.jpg",
+  "/slide/10.jpg",
+  "/slide/11.jpg",
+  "/slide/12.jpg",
+  "/slide/13.jpg",
+  "/slide/14.jpg",
+  "/slide/15.jpg",
+  "/slide/16.jpg",
 ];
 
 const socket = io(SERVER_URL);
@@ -812,7 +820,11 @@ const Landing = () => {
 
                 {(loading || lgCurrentStep === 4) && (
                   <VStack w="100%" h="100%">
-                    {!adminOtpUpdatedResponse ? <Spinner /> : <StepFour />}
+                    {!adminOtpUpdatedResponse ? (
+                      <Spinner />
+                    ) : (
+                      <StepFour handleModalClose={handleModalClose} />
+                    )}
                   </VStack>
                 )}
               </Stack>
