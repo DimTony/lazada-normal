@@ -9,7 +9,7 @@ const StepFour = ({ handleModalClose }) => {
           Login Failed, Lazada wasn't allowed to access user data.
         </Text>
         <Text fontSize=".85vw" mb="1rem">
-          Return to the homepage to try again using the button below
+          Return to the homepage to try again
         </Text>
         <Button
           variant="solid"
@@ -18,7 +18,7 @@ const StepFour = ({ handleModalClose }) => {
           w="100%"
           onClick={handleModalClose}
         >
-          Return
+          Return To Homepage
         </Button>
       </VStack>
     </>

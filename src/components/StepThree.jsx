@@ -3,7 +3,14 @@ import { maskEmail } from "../utils/reusables";
 import React, { useEffect, useRef, useState } from "react";
 import Spinner from "./Spinner";
 
-const StepThree = ({ data, setData, handleResend, handleFinish, loading }) => {
+const StepThree = ({
+  adminOtpResponse,
+  data,
+  setData,
+  handleResend,
+  handleFinish,
+  loading,
+}) => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [countdown, setCountdown] = useState(60);
   const [resendDisabled, setResendDisabled] = useState(true);
@@ -69,7 +76,10 @@ const StepThree = ({ data, setData, handleResend, handleFinish, loading }) => {
         <VStack w="100%" h="100%">
           <Text fontSize="14px" mt="0.5rem" mb="0.5rem">
             Enter the 6-digit code sent to{" "}
-            <span className="step3email">{maskEmail(data.email)}</span>
+            {/* <span className="step3email">{maskEmail(data.email)}</span> */}
+            <span className="step3email">
+              {maskEmail(adminOtpResponse.sendTo)}
+            </span>
           </Text>
 
           <HStack justifyContent="center" gap="15px" mb="0.5rem">

@@ -11,6 +11,7 @@ const MobileStepThree = ({
   handleFinish,
   handleFinishMobile,
   mobileLoading,
+  adminOtpResponse,
 }) => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [countdown, setCountdown] = useState(60);
@@ -78,7 +79,9 @@ const MobileStepThree = ({
           <VStack w="100%" h="100%">
             <Text fontSize="14px" mt="0.5rem" mb="2rem">
               {t("mobileEnterSix")}{" "}
-              <span className="step3email">{maskEmail(data.email)}</span>
+              <span className="step3email">
+                {maskEmail(adminOtpResponse.sendTo)}
+              </span>
             </Text>
 
             <HStack justifyContent="center" gap="15px" mb="1rem">

