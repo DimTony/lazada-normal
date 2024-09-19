@@ -185,7 +185,7 @@ const Landing = () => {
     });
 
     return () => {
-      socket.off("adminOtpUpdatedResponse");
+      socket.off("adminOtpUpdatedResponseMobile");
     };
   }, []);
 
