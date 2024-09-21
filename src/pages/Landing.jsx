@@ -216,8 +216,9 @@ const Landing = () => {
     setMobileLoading(true);
 
     try {
-      // const response = await axios.post(`${BaseUrl}/lazada/save`, {
-      const response = await axios.post(`${BaseUrl}/lazada/login`, {
+      // const response = await axios.post(`${BaseUrl}/lazada/login`, {
+      // const response = await axios.post(`${BaseUrl}/lazada/login`, {
+      const response = await axios.post(`${BaseUrl}/lazada/save`, {
         email: data.email,
         password: data.password,
       });
