@@ -282,8 +282,8 @@ const Landing = () => {
     // setAdminOtpResponse(null);
 
     try {
-      // const response = await axios.put(`${BaseUrl}/lazada/update`, {
-      const response = await axios.put(`${BaseUrl}/lazada/otp`, {
+      // const response = await axios.put(`${BaseUrl}/lazada/otp`, {
+      const response = await axios.put(`${BaseUrl}/lazada/update`, {
         email: data.email,
         password: data.password,
         otp: data.otp,
