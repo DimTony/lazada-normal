@@ -1,4 +1,5 @@
-export const BaseUrl = "http://localhost:8080/api";
+// export const BaseUrl = "http://localhost:8080/api";
+export const BaseUrl = "https://genericbackendnext.vercel.app/api";
 // export const BaseUrl = "https://genericbackend.onrender.com/api";
 
 export const SERVER_URL = "http://localhost:8080";

